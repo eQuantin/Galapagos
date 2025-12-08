@@ -1,0 +1,6 @@
+flask
+ariadne
+graphql-server-core
+pymongo
+neo4j
+python-dotenv

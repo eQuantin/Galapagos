@@ -1,0 +1,67 @@
+services:
+  web:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_ENV=development
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=password
+      - MONGO_URI=mongodb://mongo:password@mongo:27017/galapagos?authSource=admin
+    stop_signal: SIGINT
+    depends_on:
+      - neo4j
+      - mongo
+    ports:
+      - "5000:5000"
+    networks:
+      - app
+
+  neo4j:
+    image: neo4j
+    ports:
+      - "7474:7474" # Neo4j Browser
+      - "7687:7687" # Bolt protocol
+    environment:
+      - NEO4J_AUTH=neo4j/password
+    volumes:
+      - neo4j_data:/data
+    restart: unless-stopped
+    networks:
+      - app
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    restart: unless-stopped
+    networks:
+      - app
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=mongo
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_URL=mongodb://mongo:password@mongo:27017/
+      - ME_CONFIG_BASICAUTH_USERNAME=mongo
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+    depends_on:
+      - mongo
+    networks:
+      - app
+
+volumes:
+  neo4j_data:
+  mongo_data:
+
+networks:
+  app:

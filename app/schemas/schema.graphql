@@ -1,0 +1,167 @@
+type Query {
+    # Island queries
+    islands: [Island!]!
+    island(name: String!): Island
+
+    # Port queries
+    ports: [Port!]!
+    port(name: String!): Port
+
+    # Client queries
+    clients: [Client!]!
+    client(name: String!): Client
+
+    # Locker queries
+    lockers: [Locker!]!
+    locker(portName: String!): Locker
+
+    # Warehouse queries
+    warehouses: [Warehouse!]!
+    warehouse(name: String!): Warehouse
+
+    # Seaplane queries
+    seaplanes: [Seaplane!]!
+    seaplane(name: String!): Seaplane
+    seaplanesInMaintenance: [Seaplane!]!
+
+    # Seaplane model queries
+    seaplaneModels: [SeaplaneModel!]!
+    seaplaneModel(name: String!): SeaplaneModel
+
+    # Manufacturer queries
+    manufacturers: [Manufacturer!]!
+    manufacturer(name: String!): Manufacturer
+
+    # Status queries
+    seaplaneStatuses: [SeaplaneStatus!]!
+    seaplaneStatus(value: String!): SeaplaneStatus
+
+    # Order queries
+    orders: [Order!]!
+    order(id: String!): Order
+    ordersByClient(clientId: Int!): [Order!]!
+    ordersByWarehouse(warehouseId: Int!): [Order!]!
+    ordersByStatus(status: String!): [Order!]!
+}
+
+type Mutation {
+    # Seaplane maintenance mutations
+    moveSeaplaneIntoMaintenance(seaplaneName: String!): MaintenanceResponse!
+    moveSeaplaneOutOfMaintenance(seaplaneName: String!): MaintenanceResponse!
+
+    # Order mutations
+    createOrder(
+        client_id: Int!
+        warehouse_id: Int!
+        crateQuantity: Int!
+    ): OrderResponse!
+    updateOrderStatus(orderId: String!, status: String!): OrderResponse!
+    cancelOrder(orderId: String!, reason: String): OrderResponse!
+}
+
+type MaintenanceResponse {
+    success: Boolean!
+    message: String!
+    seaplane: Seaplane
+}
+
+type Island {
+    name: String!
+    ports: [Port!]!
+    id: Int!
+}
+
+type Port {
+    name: String!
+    latitude: Float!
+    longitude: Float!
+    island: Island
+    locker: Locker
+    warehouse: Warehouse
+    seaplanes: [Seaplane!]!
+    id: Int!
+}
+
+type Client {
+    name: String!
+    specialty: String!
+    locker: Locker
+    id: Int!
+}
+
+type Locker {
+    capacity: Int!
+    remaining_capacity: Int!
+    port: Port!
+    clients: [Client!]!
+    id: Int!
+}
+
+type Warehouse {
+    name: String!
+    port: Port!
+    id: Int!
+}
+
+type Seaplane {
+    name: String!
+    fuel: Float!
+    crates: Int!
+    model: SeaplaneModel!
+    location: Port
+    status: SeaplaneStatus!
+    id: Int!
+}
+
+type SeaplaneModel {
+    name: String!
+    crate_capacity: Int!
+    fuel_consumption_L_per_km: Float!
+    fuel_capacity_L: Float!
+    cost_per_km_USD: Float!
+    average_speed_kmh: Float!
+    manufacturer: Manufacturer!
+    seaplanes: [Seaplane!]!
+    id: Int!
+}
+
+type Manufacturer {
+    name: String!
+    models: [SeaplaneModel!]!
+    id: Int!
+}
+
+type SeaplaneStatus {
+    value: String!
+    seaplanes: [Seaplane!]!
+    id: Int!
+}
+
+type Order {
+    id: String!
+    crate_quantity: Int!
+    status: String!
+    created_at: String!
+    updated_at: String!
+    delivered_at: String
+    client: Client
+    warehouse: Warehouse
+    locker: Locker
+}
+
+type OrderResponse {
+    success: Boolean!
+    message: String!
+    order: Order
+}
+
+type OrderStatistics {
+    by_status: [StatusCount!]!
+    total_orders: Int!
+}
+
+type StatusCount {
+    _id: String!
+    count: Int!
+    total_crates: Int!
+}
