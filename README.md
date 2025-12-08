@@ -69,10 +69,10 @@ Galapagos/
 
 ## Getting started
 
-start the project with ```docker compose up -d```
-run migrations with ```docker compose exec web flask migrate```
-run ```docker compose up -d --build web``` to rebuild the python web app
+start the project with ```docker compose up -d``` <br>
+run migrations with ```docker compose exec web flask migrate``` <br>
+run ```docker compose up -d --build web``` to rebuild the python web app <br>
 
-GraphQL playtest interface is exposed on http://localhost:5000/graphql
-Mongo express interface is exposed on http://localhost:8081/db/galapagos/
-Neo4j admin interface is exposed on http://localhost:7474/browser/
+GraphQL playtest interface is exposed on http://localhost:5000/graphql <br>
+Mongo express interface is exposed on http://localhost:8081/db/galapagos/ <br>
+Neo4j admin interface is exposed on http://localhost:7474/browser/ <br>
