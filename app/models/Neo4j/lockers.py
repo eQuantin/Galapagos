@@ -8,7 +8,9 @@ def insert_lockers(locker_data):
             query = """
                 MATCH (p:Port {name: $port_name})
                 CREATE (l:Locker {
-                    capacity: $capacity,
+                    is_empty: $is_empty,
+                    capacity_type: $capacity_type,
+                    capacity_max: $capacity_max,
                     remaining_capacity: $remaining_capacity,
                     id: $id
                 })
@@ -19,9 +21,10 @@ def insert_lockers(locker_data):
             session.run(
                 query,
                 port_name=locker["port_name"],
-                capacity=locker["capacity"],
+                capacity=locker["capacity_max"],
                 id=locker["id"],
                 remaining_capacity=locker["remaining_capacity"],
+                capacity_type=locker["capacity_type"],
             )
 
 

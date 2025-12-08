@@ -90,7 +90,9 @@ type Client {
 }
 
 type Locker {
-    capacity: Int!
+    is_empty: Boolean!
+    capacity_type: Int!
+    capacity_max: Int!
     remaining_capacity: Int!
     port: Port!
     clients: [Client!]!
