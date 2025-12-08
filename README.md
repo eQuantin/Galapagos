@@ -21,6 +21,7 @@ This app serves HTML views via REST endpoints and provides a public API using Gr
 
 ## Project Structure
 
+```
 Galapagos/
 ├── app/                  # Main application directory
 │   ├── templates/        # HTML templates for REST views
@@ -39,6 +40,7 @@ Galapagos/
 ├── Sujet.pdf             # Project requirements document
 ├── compose.yml           # Docker compose file
 └── README.md             # Project documentation
+```
 
 ---
 
