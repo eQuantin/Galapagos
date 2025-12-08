@@ -42,10 +42,7 @@ def get_all_models():
 def get_model(name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (sm:SeaplaneModel {name: $name})-[:MANUFACTURED_BY]->(m:Manufacturer)
-            RETURN sm, m
-        """
+        query = "MATCH (sm:SeaplaneModel {name: $name})-[:MANUFACTURED_BY]->(m:Manufacturer) RETURN sm, m"
         result = session.run(query, name=name)
         record = result.single()
         return dict(record["sm"]) if record else None
@@ -54,10 +51,7 @@ def get_model(name):
 def get_models_by_manufacturer(manufacturer_name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (sm:SeaplaneModel)-[:MANUFACTURED_BY]->(m:Manufacturer {name: $manufacturer_name})
-            RETURN sm
-        """
+        query = "MATCH (sm:SeaplaneModel)-[:MANUFACTURED_BY]->(m:Manufacturer {name: $manufacturer_name}) RETURN sm"
         result = session.run(query, manufacturer_name=manufacturer_name)
         return [dict(record["sm"]) for record in result]
 

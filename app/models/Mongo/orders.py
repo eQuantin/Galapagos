@@ -87,11 +87,10 @@ def update_order_status(order_id, new_status):
     db = get_mongo_db()
 
     try:
-        update_data = {"status": new_status, "updated_at": datetime.utcnow()}
+        update_data = {"status": new_status, "updated_at": datetime.now()}
 
-        # If status is delivered, set delivered_at timestamp
         if new_status == "delivered":
-            update_data["delivered_at"] = datetime.utcnow()
+            update_data["delivered_at"] = datetime.now()
 
         result = db.orders.update_one(
             {"_id": ObjectId(order_id)}, {"$set": update_data}
@@ -108,7 +107,7 @@ def update_order(order_id, update_fields):
     db = get_mongo_db()
 
     try:
-        update_fields["updated_at"] = datetime.utcnow()
+        update_fields["updated_at"] = datetime.now()
 
         result = db.orders.update_one(
             {"_id": ObjectId(order_id)}, {"$set": update_fields}
@@ -125,7 +124,7 @@ def cancel_order(order_id, reason=None):
     db = get_mongo_db()
 
     try:
-        update_data = {"status": "cancelled", "updated_at": datetime.utcnow()}
+        update_data = {"status": "cancelled", "updated_at": datetime.now()}
 
         if reason:
             update_data["cancellation_reason"] = reason

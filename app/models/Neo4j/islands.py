@@ -5,9 +5,7 @@ def insert_islands(islands_data):
     driver = get_neo4j_driver()
     with driver.session() as session:
         for island in islands_data:
-            query = """
-                CREATE (i:Island {name: $name})
-            """
+            query = "CREATE (i:Island {name: $name})"
             session.run(query, name=island["name"])
 
 

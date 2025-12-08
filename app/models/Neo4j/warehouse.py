@@ -48,10 +48,9 @@ def get_warehouse_by_id(id):
 def get_warehouse_by_port(port_name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (w:Warehouse)-[:LOCATED_AT]->(p:Port {name: $port_name})
-            RETURN w
-        """
+        query = (
+            "MATCH (w:Warehouse)-[:LOCATED_AT]->(p:Port {name: $port_name}) RETURN w"
+        )
         result = session.run(query, port_name=port_name)
         record = result.single()
         return dict(record["w"]) if record else None

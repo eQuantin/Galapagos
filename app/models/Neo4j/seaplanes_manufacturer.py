@@ -5,9 +5,7 @@ def insert_seaplanes_manufacturers(manufacturers_data):
     driver = get_neo4j_driver()
     with driver.session() as session:
         for manufacturer in manufacturers_data:
-            query = """
-                CREATE (m:Manufacturer {name: $name})
-            """
+            query = "CREATE (m:Manufacturer {name: $name})"
             session.run(query, name=manufacturer["name"])
 
 

@@ -7,9 +7,7 @@ def insert_seaplanes_status(status_data):
         for status in status_data:
             value = status["value"]
 
-            query = """
-                CREATE (st:SeaplaneStatus {value: $value})
-            """
+            query = "CREATE (st:SeaplaneStatus {value: $value})"
             session.run(query, value=value)
 
 
@@ -33,10 +31,7 @@ def get_status(value):
 def get_status_by_seaplane(name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (s:Seaplane {name: $name})-[:HAS_STATUS]->(st:SeaplaneStatus)
-            RETURN st
-        """
+        query = "MATCH (s:Seaplane {name: $name})-[:HAS_STATUS]->(st:SeaplaneStatus) RETURN st"
         result = session.run(query, name=name)
         record = result.single()
         return dict(record["st"]) if record else None

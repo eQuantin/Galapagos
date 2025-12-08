@@ -36,10 +36,7 @@ def get_all_lockers():
 def get_locker_by_port(port_name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (l:Locker)-[:LOCATED_AT]->(p:Port {name: $port_name})
-            RETURN l
-        """
+        query = "MATCH (l:Locker)-[:LOCATED_AT]->(p:Port {name: $port_name}) RETURN l"
         result = session.run(query, port_name=port_name)
         record = result.single()
         return dict(record["l"]) if record else None
@@ -48,10 +45,7 @@ def get_locker_by_port(port_name):
 def get_locker(id):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (l:Locker {id: $id})
-            RETURN l
-        """
+        query = "MATCH (l:Locker {id: $id}) RETURN l"
         result = session.run(query, id=id)
         record = result.single()
         return dict(record["l"]) if record else None
@@ -60,10 +54,9 @@ def get_locker(id):
 def get_locker_for_client(client_name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (c:Client {name: $client_name})-[:ASSIGNED_TO]->(l:Locker)
-            RETURN l
-        """
+        query = (
+            "MATCH (c:Client {name: $client_name})-[:ASSIGNED_TO]->(l:Locker) RETURN l"
+        )
         result = session.run(query, client_name=client_name)
         record = result.single()
         return dict(record["l"]) if record else None

@@ -53,9 +53,6 @@ def get_client_by_id(id):
 def get_clients_by_locker(locker_id):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (c:Client)-[:ASSIGNED_TO]->(l:Locker {id: $locker_id})
-            RETURN c
-        """
+        query = "MATCH (c:Client)-[:ASSIGNED_TO]->(l:Locker {id: $locker_id}) RETURN c"
         result = session.run(query, locker_id=locker_id)
         return [dict(record["c"]) for record in result]

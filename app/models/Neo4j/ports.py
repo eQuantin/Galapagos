@@ -39,10 +39,7 @@ def get_port(name):
 def get_ports_by_island(island_name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (p:Port)-[:LOCATED_ON]->(i:Island {name: $island_name})
-            RETURN p
-        """
+        query = "MATCH (p:Port)-[:LOCATED_ON]->(i:Island {name: $island_name}) RETURN p"
         result = session.run(query, island_name=island_name)
         return [dict(record["p"]) for record in result]
 
@@ -50,10 +47,7 @@ def get_ports_by_island(island_name):
 def get_port_by_locker(locker_id):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (l:Locker {id: $locker_id})-[:LOCATED_AT]->(p:Port)
-            RETURN p
-        """
+        query = "MATCH (l:Locker {id: $locker_id})-[:LOCATED_AT]->(p:Port) RETURN p"
         result = session.run(query, locker_id=locker_id)
         record = result.single()
         return dict(record["p"]) if record else None

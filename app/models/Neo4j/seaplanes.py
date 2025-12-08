@@ -49,10 +49,7 @@ def get_seaplane(name):
 def get_seaplanes_by_model(model_name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (s:Seaplane)-[:MODEL_TYPE]->(sm:SeaplaneModel {name: $model_name})
-            RETURN s
-        """
+        query = "MATCH (s:Seaplane)-[:MODEL_TYPE]->(sm:SeaplaneModel {name: $model_name}) RETURN s"
         result = session.run(query, model_name=model_name)
         return [dict(record["s"]) for record in result]
 
@@ -60,10 +57,7 @@ def get_seaplanes_by_model(model_name):
 def get_seaplanes_by_port(port_name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (s:Seaplane)-[:DOCKED_AT]->(p:Port {name: $port_name})
-            RETURN s
-        """
+        query = "MATCH (s:Seaplane)-[:DOCKED_AT]->(p:Port {name: $port_name}) RETURN s"
         result = session.run(query, port_name=port_name)
         return [dict(record["s"]) for record in result]
 
@@ -71,10 +65,7 @@ def get_seaplanes_by_port(port_name):
 def get_seaplanes_by_status(status_value):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (s:Seaplane)-[:HAS_STATUS]->(st:SeaplaneStatus {value: $status_value})
-            RETURN s
-        """
+        query = "MATCH (s:Seaplane)-[:HAS_STATUS]->(st:SeaplaneStatus {value: $status_value}) RETURN s"
         result = session.run(query, status_value=status_value)
         return [dict(record["s"]) for record in result]
 
@@ -157,9 +148,6 @@ def get_available_seaplanes(port_name=None):
 def delete_seaplane(name):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (s:Seaplane {name: $name})
-            DETACH DELETE s
-        """
+        query = "MATCH (s:Seaplane {name: $name}) DETACH DELETE s"
         session.run(query, name=name)
         return True
