@@ -130,6 +130,18 @@ def get_nearby_ports(port_name, limit=None):
         ]
 
 
+def get_distance_between_ports(port1_name, port2_name):
+    driver = get_neo4j_driver()
+    with driver.session() as session:
+        query = """
+            MATCH (p1:Port {name: $port1})-[d:DISTANCE_TO]->(p2:Port {name: $port2})
+            RETURN d.distance_km as distance
+        """
+        result = session.run(query, port1=port1_name, port2=port2_name)
+        record = result.single()
+        return record["distance"] if record else None
+
+
 def get_shortest_path_between_ports(start_port_name, end_port_name):
     driver = get_neo4j_driver()
     with driver.session() as session:

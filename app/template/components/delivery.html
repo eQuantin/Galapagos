@@ -1,0 +1,36 @@
+<div class="delivery-panel">
+    <h2>🚚 Create New Delivery</h2>
+
+    <form id="delivery-form">
+        <div class="form-group">
+            <label for="seaplane-delivery-select">Seaplane</label>
+            <select id="seaplane-delivery-select" required>
+                <option value="">Select a seaplane...</option>
+            </select>
+            <div id="seaplane-delivery-info" class="seaplane-delivery-info" style="display: none;">
+                Status: <span id="seaplane-delivery-status">-</span><br>
+                Capacity: <span id="seaplane-delivery-capacity">-</span> crates<br>
+                Location: <span id="seaplane-delivery-location">-</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="order-select">Pending Orders</label>
+            <div id="order-list" class="order-list">
+                <div class="order-list-empty">
+                    No pending orders available
+                </div>
+            </div>
+            <div id="selected-orders-info" class="selected-orders-info" style="display: none;">
+                Selected: <span id="selected-order-count">0</span> order(s),
+                <span id="selected-crate-count">0</span> crate(s)
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-delivery">
+            Create Delivery
+        </button>
+    </form>
+
+    <div id="delivery-message" class="delivery-message"></div>
+</div>

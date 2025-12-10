@@ -32,6 +32,7 @@
 
                     <div class="panels-container">
                         {% include 'components/seaplane.html' %} {% include
+                        'components/delivery.html' %} {% include
                         'components/orders.html' %}
                     </div>
                 </div>
@@ -48,6 +49,7 @@
         <!-- Application JS -->
         <script src="{{ url_for('static', filename='js/seaplane.js') }}"></script>
         <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/delivery.js') }}"></script>
         <script src="{{ url_for('static', filename='js/orders.js') }}"></script>
     </body>
 </html>

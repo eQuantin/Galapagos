@@ -6,7 +6,11 @@ type Query {
     # Port queries
     ports: [Port!]!
     port(name: String!): Port
-    nearbyPorts(portName: String!, maxDistanceKm: Float, limit: Int): [PortDistance!]!
+    nearbyPorts(
+        portName: String!
+        maxDistanceKm: Float
+        limit: Int
+    ): [PortDistance!]!
     shortestPathBetweenPorts(startPort: String!, endPort: String!): PortPath
 
     # Client queries
@@ -44,6 +48,14 @@ type Query {
     ordersByClient(clientId: Int!): [Order!]!
     ordersByWarehouse(warehouseId: Int!): [Order!]!
     ordersByStatus(status: String!): [Order!]!
+
+    # Delivery queries
+    deliveries: [Delivery!]!
+    delivery(id: String!): Delivery
+    deliveriesBySeaplane(seaplaneName: String!): [Delivery!]!
+    deliveriesByStatus(status: String!): [Delivery!]!
+    activeDeliveryForSeaplane(seaplaneName: String!): Delivery
+    deliveryProgress(deliveryId: String!): DeliveryProgress
 }
 
 type Mutation {
@@ -59,6 +71,13 @@ type Mutation {
     ): OrderResponse!
     updateOrderStatus(orderId: String!, status: String!): OrderResponse!
     cancelOrder(orderId: String!, reason: String): OrderResponse!
+
+    # Delivery mutations
+    createDelivery(
+        orderIds: [String!]!
+        seaplaneName: String!
+    ): DeliveryResponse!
+    startDelivery(deliveryId: String!): DeliveryResponse!
 }
 
 type MaintenanceResponse {
@@ -70,7 +89,6 @@ type MaintenanceResponse {
 type Island {
     name: String!
     ports: [Port!]!
-    id: Int!
 }
 
 type Port {
@@ -81,7 +99,6 @@ type Port {
     locker: Locker
     warehouse: Warehouse
     seaplanes: [Seaplane!]!
-    id: Int!
 }
 
 type PortDistance {
@@ -99,7 +116,6 @@ type Client {
     name: String!
     specialty: String!
     locker: Locker
-    id: Int!
 }
 
 type Locker {
@@ -123,7 +139,18 @@ type Seaplane {
     model: SeaplaneModel!
     location: Port
     status: SeaplaneStatus!
-    id: Int!
+    currentPosition: FlightPosition # Nullable - only present when flying
+}
+
+type FlightPosition {
+    latitude: Float!
+    longitude: Float!
+    progress_percent: Float!
+    distance_traveled_km: Float!
+    distance_remaining_km: Float!
+    estimated_arrival: String!
+    departure_port: String!
+    destination_port: String!
 }
 
 type SeaplaneModel {
@@ -135,19 +162,16 @@ type SeaplaneModel {
     average_speed_kmh: Float!
     manufacturer: Manufacturer!
     seaplanes: [Seaplane!]!
-    id: Int!
 }
 
 type Manufacturer {
     name: String!
     models: [SeaplaneModel!]!
-    id: Int!
 }
 
 type SeaplaneStatus {
     value: String!
     seaplanes: [Seaplane!]!
-    id: Int!
 }
 
 type Order {
@@ -177,4 +201,38 @@ type StatusCount {
     _id: String!
     count: Int!
     total_crates: Int!
+}
+
+type Delivery {
+    id: String!
+    order_ids: [String!]!
+    seaplane_name: String!
+    route: [String!]!
+    total_distance_km: Float!
+    estimated_duration_hours: Float!
+    status: String!
+    created_at: String!
+    started_at: String
+    completed_at: String
+    seaplane: Seaplane
+    orders: [Order!]!
+    progress: DeliveryProgress
+}
+
+type DeliveryResponse {
+    success: Boolean!
+    message: String!
+    delivery: Delivery
+}
+
+type DeliveryProgress {
+    status: String!
+    current_leg: Int!
+    current_port: String
+    next_port: String
+    departure_port: String
+    position: FlightPosition
+    progress_percent: Float!
+    time_at_port: Float
+    can_depart: Boolean!
 }

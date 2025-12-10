@@ -15,6 +15,19 @@ from resolvers.client_resolvers import (
     resolve_client_locker,
     resolve_clients,
 )
+from resolvers.delivery_resolvers import (
+    resolve_active_delivery_for_seaplane,
+    resolve_create_delivery,
+    resolve_deliveries,
+    resolve_deliveries_by_seaplane,
+    resolve_deliveries_by_status,
+    resolve_delivery,
+    resolve_delivery_orders,
+    resolve_delivery_progress,
+    resolve_delivery_progress_field,
+    resolve_delivery_seaplane,
+    resolve_start_delivery,
+)
 from resolvers.island_resolvers import (
     resolve_island,
     resolve_island_ports,
@@ -67,6 +80,7 @@ from resolvers.seaplane_model_resolvers import (
 )
 from resolvers.seaplane_resolvers import (
     resolve_seaplane,
+    resolve_seaplane_current_position,
     resolve_seaplane_model,
     resolve_seaplane_port,
     resolve_seaplane_status,
@@ -139,6 +153,14 @@ query_type.set_field("ordersByClient", resolve_orders_by_client)
 query_type.set_field("ordersByWarehouse", resolve_orders_by_warehouse)
 query_type.set_field("ordersByStatus", resolve_orders_by_status)
 
+# Delivery queries
+query_type.set_field("deliveries", resolve_deliveries)
+query_type.set_field("delivery", resolve_delivery)
+query_type.set_field("deliveriesBySeaplane", resolve_deliveries_by_seaplane)
+query_type.set_field("deliveriesByStatus", resolve_deliveries_by_status)
+query_type.set_field("activeDeliveryForSeaplane", resolve_active_delivery_for_seaplane)
+query_type.set_field("deliveryProgress", resolve_delivery_progress)
+
 # ============================================================================
 # Mutation Type Resolvers
 # ============================================================================
@@ -156,6 +178,10 @@ mutation_type.set_field(
 mutation_type.set_field("createOrder", resolve_create_order)
 mutation_type.set_field("updateOrderStatus", resolve_update_order_status)
 mutation_type.set_field("cancelOrder", resolve_cancel_order)
+
+# Delivery mutations
+mutation_type.set_field("createDelivery", resolve_create_delivery)
+mutation_type.set_field("startDelivery", resolve_start_delivery)
 
 # ============================================================================
 # Object Type Resolvers (Nested Fields)
@@ -190,6 +216,7 @@ seaplane_type = ObjectType("Seaplane")
 seaplane_type.set_field("location", resolve_seaplane_port)
 seaplane_type.set_field("model", resolve_seaplane_model)
 seaplane_type.set_field("status", resolve_seaplane_status)
+seaplane_type.set_field("currentPosition", resolve_seaplane_current_position)
 
 # SeaplaneModel type
 seaplane_model_type = ObjectType("SeaplaneModel")
@@ -214,6 +241,12 @@ order_type.set_field("client", resolve_order_client)
 order_type.set_field("warehouse", resolve_order_warehouse)
 order_type.set_field("locker", resolve_order_locker)
 
+# Delivery type
+delivery_type = ObjectType("Delivery")
+delivery_type.set_field("seaplane", resolve_delivery_seaplane)
+delivery_type.set_field("orders", resolve_delivery_orders)
+delivery_type.set_field("progress", resolve_delivery_progress_field)
+
 # ============================================================================
 # Create Executable Schema
 # ============================================================================
@@ -233,6 +266,7 @@ schema = make_executable_schema(
         seaplane_status_type,
         maintenance_response_type,
         order_type,
+        delivery_type,
     ],
 )
 

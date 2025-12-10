@@ -12,7 +12,10 @@ def insert_seaplanes(seaplanes_data):
                 CREATE (s:Seaplane {
                     name: $name,
                     fuel: $fuel,
-                    crates: $crates
+                    crates: $crates,
+                    flight_departure_port: null,
+                    flight_destination_port: null,
+                    flight_departure_time: null
                 })
                 CREATE (s)-[:MODEL_TYPE]->(sm)
                 CREATE (s)-[:DOCKED_AT]->(p)
@@ -99,13 +102,36 @@ def update_seaplane_crates(name, crates_count):
 def update_seaplane_status(name, new_status):
     driver = get_neo4j_driver()
     with driver.session() as session:
-        query = """
-            MATCH (s:Seaplane {name: $name})-[r:HAS_STATUS]->(:SeaplaneStatus)
-            MATCH (new_st:SeaplaneStatus {value: $new_status})
-            DELETE r
-            CREATE (s)-[:HAS_STATUS]->(new_st)
-            RETURN s
-        """
+        if new_status == "flying":
+            query = """
+                MATCH (s:Seaplane {name: $name})-[r:HAS_STATUS]->(:SeaplaneStatus)
+                MATCH (new_st:SeaplaneStatus {value: $new_status})
+                DELETE r
+                CREATE (s)-[:HAS_STATUS]->(new_st)
+                WITH s
+                OPTIONAL MATCH (s)-[dock:DOCKED_AT]->(:Port)
+                DELETE dock
+                RETURN s
+            """
+        elif new_status == "docked":
+            query = """
+                MATCH (s:Seaplane {name: $name})-[r:HAS_STATUS]->(:SeaplaneStatus)
+                MATCH (new_st:SeaplaneStatus {value: $new_status})
+                DELETE r
+                CREATE (s)-[:HAS_STATUS]->(new_st)
+                SET s.flight_departure_port = null,
+                    s.flight_destination_port = null,
+                    s.flight_departure_time = null
+                RETURN s
+            """
+        else:
+            query = """
+                MATCH (s:Seaplane {name: $name})-[r:HAS_STATUS]->(:SeaplaneStatus)
+                MATCH (new_st:SeaplaneStatus {value: $new_status})
+                DELETE r
+                CREATE (s)-[:HAS_STATUS]->(new_st)
+                RETURN s
+            """
         result = session.run(query, name=name, new_status=new_status)
         record = result.single()
         return dict(record["s"]) if record else None
@@ -115,8 +141,9 @@ def update_seaplane_location(name, new_port):
     driver = get_neo4j_driver()
     with driver.session() as session:
         query = """
-            MATCH (s:Seaplane {name: $name})-[r:DOCKED_AT]->(:Port)
+            MATCH (s:Seaplane {name: $name})
             MATCH (new_p:Port {name: $new_port})
+            OPTIONAL MATCH (s)-[r:DOCKED_AT]->(:Port)
             DELETE r
             CREATE (s)-[:DOCKED_AT]->(new_p)
             RETURN s
@@ -143,6 +170,59 @@ def get_available_seaplanes(port_name=None):
             """
             result = session.run(query)
         return [dict(record["s"]) for record in result]
+
+
+def remove_seaplane_location(name):
+    driver = get_neo4j_driver()
+    with driver.session() as session:
+        query = """
+            MATCH (s:Seaplane {name: $name})-[r:DOCKED_AT]->(:Port)
+            DELETE r
+            RETURN s
+        """
+        result = session.run(query, name=name)
+        record = result.single()
+        return dict(record["s"]) if record else None
+
+
+def start_seaplane_flight(name, departure_port, destination_port, departure_time):
+    driver = get_neo4j_driver()
+    with driver.session() as session:
+        # Convert datetime to ISO string if needed
+        if hasattr(departure_time, "isoformat"):
+            departure_time = departure_time.isoformat()
+
+        query = """
+            MATCH (s:Seaplane {name: $name})
+            SET s.flight_departure_port = $departure_port,
+                s.flight_destination_port = $destination_port,
+                s.flight_departure_time = $departure_time
+            RETURN s
+        """
+        result = session.run(
+            query,
+            name=name,
+            departure_port=departure_port,
+            destination_port=destination_port,
+            departure_time=departure_time,
+        )
+        record = result.single()
+        return dict(record["s"]) if record else None
+
+
+def clear_seaplane_flight_info(name):
+    driver = get_neo4j_driver()
+    with driver.session() as session:
+        query = """
+            MATCH (s:Seaplane {name: $name})
+            SET s.flight_departure_port = null,
+                s.flight_destination_port = null,
+                s.flight_departure_time = null
+            RETURN s
+        """
+        result = session.run(query, name=name)
+        record = result.single()
+        return dict(record["s"]) if record else None
 
 
 def delete_seaplane(name):
