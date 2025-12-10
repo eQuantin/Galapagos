@@ -18,6 +18,8 @@ from models.Neo4j.seaplanes_manufacturer import insert_seaplanes_manufacturers
 from models.Neo4j.seaplanes_models import insert_seaplanes_models
 from models.Neo4j.seaplanes_status import insert_seaplanes_status
 from models.Neo4j.warehouse import insert_warehouse
+from models.Mongo.scientific_equipment import insert_scientific_equipment
+from data.scientific_equipment import equipment_data
 
 
 def migrate():
@@ -31,4 +33,5 @@ def migrate():
     insert_lockers(lockers_data)
     insert_warehouse(warehouse_data)
     insert_clients(scientists_data)
+    insert_scientific_equipment(equipment_data)
     create_port_distance_relationships()
