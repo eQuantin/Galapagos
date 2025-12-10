@@ -6,7 +6,11 @@ type Query {
     # Port queries
     ports: [Port!]!
     port(name: String!): Port
-    nearbyPorts(portName: String!, maxDistanceKm: Float, limit: Int): [PortDistance!]!
+    nearbyPorts(
+        portName: String!
+        maxDistanceKm: Float
+        limit: Int
+    ): [PortDistance!]!
     shortestPathBetweenPorts(startPort: String!, endPort: String!): PortPath
 
     # Client queries
@@ -54,6 +58,12 @@ type Mutation {
     moveSeaplaneIntoMaintenance(seaplaneName: String!): MaintenanceResponse!
     moveSeaplaneOutOfMaintenance(seaplaneName: String!): MaintenanceResponse!
 
+    # Seaplane location mutations
+    changeSeaplaneLocation(
+        seaplaneName: String!
+        newPortName: String!
+    ): SeaplaneLocationResponse!
+
     # Order mutations
     createOrder(
         client_id: Int!
@@ -68,6 +78,14 @@ type MaintenanceResponse {
     success: Boolean!
     message: String!
     seaplane: Seaplane
+}
+
+type SeaplaneLocationResponse {
+    success: Boolean!
+    message: String!
+    seaplane: Seaplane
+    previousPort: Port
+    newPort: Port
 }
 
 type Island {

@@ -66,6 +66,7 @@ from resolvers.seaplane_model_resolvers import (
     resolve_models,
 )
 from resolvers.seaplane_resolvers import (
+    resolve_change_seaplane_location,
     resolve_seaplane,
     resolve_seaplane_model,
     resolve_seaplane_port,
@@ -158,6 +159,9 @@ mutation_type.set_field(
     "moveSeaplaneOutOfMaintenance", resolve_move_seaplane_out_of_maintenance
 )
 
+# Seaplane location mutations
+mutation_type.set_field("changeSeaplaneLocation", resolve_change_seaplane_location)
+
 # Order mutations
 mutation_type.set_field("createOrder", resolve_create_order)
 mutation_type.set_field("updateOrderStatus", resolve_update_order_status)
@@ -214,6 +218,10 @@ seaplane_status_type.set_field("seaplanes", resolve_status_seaplane)
 maintenance_response_type = ObjectType("MaintenanceResponse")
 maintenance_response_type.set_field("seaplane", resolve_seaplane_port)
 
+# SeaplaneLocationResponse type
+seaplane_location_response_type = ObjectType("SeaplaneLocationResponse")
+seaplane_location_response_type.set_field("seaplane", resolve_seaplane_port)
+
 # Order type
 order_type = ObjectType("Order")
 order_type.set_field("client", resolve_order_client)
@@ -238,6 +246,7 @@ schema = make_executable_schema(
         manufacturer_type,
         seaplane_status_type,
         maintenance_response_type,
+        seaplane_location_response_type,
         order_type,
     ],
 )
