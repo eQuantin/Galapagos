@@ -1,0 +1,73 @@
+<div class="info-panel">
+    <h2>Seaplane Information</h2>
+
+    <div id="placeholder" class="placeholder-message">
+        <span style="font-size: 3rem;">✈️</span>
+        <p>Click on a seaplane marker on the map to view its details</p>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+        Loading seaplane data
+    </div>
+
+    <div id="seaplane-details" class="seaplane-details">
+        <div class="detail-item">
+            <div class="detail-label">Name</div>
+            <div class="detail-value" id="seaplane-name">-</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Status</div>
+            <div class="detail-value">
+                <span id="seaplane-status" class="status-badge">-</span>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Model</div>
+            <div class="detail-value" id="seaplane-model">-</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Manufacturer</div>
+            <div class="detail-value" id="seaplane-manufacturer">-</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Location (Port)</div>
+            <div class="detail-value" id="seaplane-location">-</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Crates Loaded</div>
+            <div class="detail-value">
+                <span id="seaplane-crates">-</span> / <span id="seaplane-capacity">-</span>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Fuel Level</div>
+            <div class="detail-value">
+                <span id="seaplane-fuel">-</span> L / <span id="seaplane-fuel-capacity">-</span> L
+            </div>
+            <div class="fuel-bar">
+                <div id="fuel-bar-fill" class="fuel-bar-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Fuel Consumption</div>
+            <div class="detail-value" id="seaplane-consumption">-</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Average Speed</div>
+            <div class="detail-value" id="seaplane-speed">-</div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-label">Cost per km</div>
+            <div class="detail-value" id="seaplane-cost">-</div>
+        </div>
+    </div>
+</div>
