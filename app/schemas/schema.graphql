@@ -42,6 +42,9 @@ type Query {
     ordersByClient(clientId: Int!): [Order!]!
     ordersByWarehouse(warehouseId: Int!): [Order!]!
     ordersByStatus(status: String!): [Order!]!
+
+    # Scientific Equipment queries
+    scientificEquipments: [ScientificEquipment!]!
 }
 
 type Mutation {
@@ -164,4 +167,9 @@ type StatusCount {
     _id: String!
     count: Int!
     total_crates: Int!
+}
+
+type ScientificEquipment{
+    id: String!
+    name: String!
 }

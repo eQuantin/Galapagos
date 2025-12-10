@@ -80,6 +80,9 @@ from resolvers.warehouse_resolvers import (
     resolve_warehouse_port,
     resolve_warehouses,
 )
+from resolvers.scientific_equipment import (
+    resolve_scientific_equipments,
+)
 
 load_dotenv()
 
@@ -134,6 +137,9 @@ query_type.set_field("order", resolve_order)
 query_type.set_field("ordersByClient", resolve_orders_by_client)
 query_type.set_field("ordersByWarehouse", resolve_orders_by_warehouse)
 query_type.set_field("ordersByStatus", resolve_orders_by_status)
+
+# Scientific Equipment queries
+query_type.set_field("scientificEquipments", resolve_scientific_equipments)
 
 # ============================================================================
 # Mutation Type Resolvers
