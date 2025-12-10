@@ -12,7 +12,7 @@ from models.Neo4j.clients import insert_clients
 from models.Neo4j.islands import insert_islands
 from models.Neo4j.lockers import insert_lockers
 from models.Neo4j.neo4j_models import clean_database
-from models.Neo4j.ports import insert_ports
+from models.Neo4j.ports import create_port_distance_relationships, insert_ports
 from models.Neo4j.seaplanes import insert_seaplanes
 from models.Neo4j.seaplanes_manufacturer import insert_seaplanes_manufacturers
 from models.Neo4j.seaplanes_models import insert_seaplanes_models
@@ -31,3 +31,4 @@ def migrate():
     insert_lockers(lockers_data)
     insert_warehouse(warehouse_data)
     insert_clients(scientists_data)
+    create_port_distance_relationships()

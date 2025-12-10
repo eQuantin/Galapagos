@@ -6,6 +6,8 @@ type Query {
     # Port queries
     ports: [Port!]!
     port(name: String!): Port
+    nearbyPorts(portName: String!, maxDistanceKm: Float, limit: Int): [PortDistance!]!
+    shortestPathBetweenPorts(startPort: String!, endPort: String!): PortPath
 
     # Client queries
     clients: [Client!]!
@@ -80,6 +82,17 @@ type Port {
     warehouse: Warehouse
     seaplanes: [Seaplane!]!
     id: Int!
+}
+
+type PortDistance {
+    port: Port!
+    distance_km: Float!
+}
+
+type PortPath {
+    ports: [String!]!
+    total_distance_km: Float!
+    num_stops: Int!
 }
 
 type Client {

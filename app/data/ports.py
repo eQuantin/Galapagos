@@ -50,7 +50,7 @@ ports_data = [
     {
         "name": "Puerto de Urbina Bay",
         "latitude": -0.3931,
-        "longitude": -9122,
+        "longitude": -91.22,
         "island": "Isla Isabela",
     },
     {

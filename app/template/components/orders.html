@@ -1,0 +1,33 @@
+<div class="order-panel">
+    <h2>📦 Place New Order</h2>
+
+    <form id="order-form">
+        <div class="form-group">
+            <label for="client-select">Client</label>
+            <select id="client-select" required>
+                <option value="">Select a client...</option>
+            </select>
+            <div id="client-info" class="client-info" style="display: none;">
+                Locker capacity: <span id="locker-capacity">-</span> crates available
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="warehouse-select">Warehouse</label>
+            <select id="warehouse-select" required>
+                <option value="">Select a warehouse...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="crate-quantity">Number of Crates</label>
+            <input type="number" id="crate-quantity" min="1" max="100" value="1" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-order">
+            Place Order
+        </button>
+    </form>
+
+    <div id="order-message" class="order-message"></div>
+</div>

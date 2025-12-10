@@ -1,3 +1,5 @@
+from utils.harvesine import haversine
+
 from .neo4j_models import get_neo4j_driver
 
 
@@ -69,3 +71,84 @@ def get_port_by_seaplane(name):
         result = session.run(query, name=name)
         record = result.single()
         return dict(record["p"]) if record else None
+
+
+def create_port_distance_relationships():
+    driver = get_neo4j_driver()
+    with driver.session() as session:
+        query = "MATCH (p:Port) RETURN p"
+        result = session.run(query)
+        ports = [dict(record["p"]) for record in result]
+
+        for i, port1 in enumerate(ports):
+            for port2 in ports[i + 1 :]:
+                distance = haversine(
+                    port1["latitude"],
+                    port1["longitude"],
+                    port2["latitude"],
+                    port2["longitude"],
+                )
+
+                query = """
+                    MATCH (p1:Port {name: $name1})
+                    MATCH (p2:Port {name: $name2})
+                    MERGE (p1)-[:DISTANCE_TO {distance_km: $distance}]->(p2)
+                    MERGE (p2)-[:DISTANCE_TO {distance_km: $distance}]->(p1)
+                """
+                session.run(
+                    query,
+                    name1=port1["name"],
+                    name2=port2["name"],
+                    distance=round(distance, 2),
+                )
+        return
+
+
+def get_nearby_ports(port_name, limit=None):
+    driver = get_neo4j_driver()
+    with driver.session() as session:
+        query = """
+            MATCH (p1:Port {name: $port_name})-[d:DISTANCE_TO]->(p2:Port)
+        """
+
+        conditions = []
+        params = {"port_name": port_name}
+
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+
+        query += " RETURN p2, d.distance_km as distance ORDER BY distance ASC"
+
+        if limit is not None:
+            query += " LIMIT $limit"
+            params["limit"] = limit
+
+        result = session.run(query, **params)
+        return [
+            {"port": dict(record["p2"]), "distance_km": record["distance"]}
+            for record in result
+        ]
+
+
+def get_shortest_path_between_ports(start_port_name, end_port_name):
+    driver = get_neo4j_driver()
+    with driver.session() as session:
+        query = """
+            MATCH (start:Port {name: $start_port}), (end:Port {name: $end_port})
+            CALL apoc.algo.dijkstra(start, end, 'DISTANCE_TO', 'distance_km')
+            YIELD path, weight
+            RETURN
+                [node in nodes(path) | node.name] as ports,
+                weight as total_distance_km,
+                length(path) as num_stops
+        """
+        result = session.run(query, start_port=start_port_name, end_port=end_port_name)
+        record = result.single()
+
+        if record:
+            return {
+                "ports": record["ports"],
+                "total_distance_km": round(record["total_distance_km"], 2),
+                "num_stops": record["num_stops"],
+            }
+        return None

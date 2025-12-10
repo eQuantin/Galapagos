@@ -9,7 +9,7 @@ from ariadne import (
 from ariadne.explorer import ExplorerGraphiQL
 from data.migrate import migrate
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 from resolvers.client_resolvers import (
     resolve_client,
     resolve_client_locker,
@@ -45,12 +45,14 @@ from resolvers.order_resolvers import (
     resolve_update_order_status,
 )
 from resolvers.port_resolvers import (
+    resolve_nearby_ports,
     resolve_port,
     resolve_port_island,
     resolve_port_locker,
     resolve_port_seaplanes,
     resolve_port_warehouse,
     resolve_ports,
+    resolve_shortest_path_between_ports,
 )
 from resolvers.seaplane_manufacturer_resolvers import (
     resolve_manufacturer,
@@ -98,6 +100,8 @@ query_type.set_field("island", resolve_island)
 # Port queries
 query_type.set_field("ports", resolve_ports)
 query_type.set_field("port", resolve_port)
+query_type.set_field("nearbyPorts", resolve_nearby_ports)
+query_type.set_field("shortestPathBetweenPorts", resolve_shortest_path_between_ports)
 
 # Client queries
 query_type.set_field("clients", resolve_clients)
@@ -235,13 +239,13 @@ schema = make_executable_schema(
 # ============================================================================
 # Flask App
 # ============================================================================
-app = Flask(__name__)
+app = Flask(__name__, template_folder="template")
 explorer_html = ExplorerGraphiQL().html(None)
 
 
 @app.route("/", methods=["GET"])
-def hello_world():
-    return "Hello world!"
+def index():
+    return render_template("app.html")
 
 
 @app.route("/graphql", methods=["GET"])
